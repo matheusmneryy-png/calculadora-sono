@@ -59,8 +59,13 @@ const ProfileTab = () => {
         <div className="flex items-center gap-3 p-4">
           <User className="w-4 h-4 text-muted-foreground" />
           <div>
-            <p className="text-sm font-medium text-foreground">Conta</p>
-            <p className="text-xs text-muted-foreground">Armazenamento local do dispositivo</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-foreground">Conta Ativa</p>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-500/10 text-green-500">
+                Nuvem
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">Sincronizado automaticamente</p>
           </div>
         </div>
       </div>

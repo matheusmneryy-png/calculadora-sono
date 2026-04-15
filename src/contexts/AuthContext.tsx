@@ -60,6 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
+        if (error.message.includes("Email not confirmed")) {
+          return { ok: false, error: "Confirme seu e-mail (clique no link enviado) antes de entrar, ou desative a confirmação no Supabase." };
+        }
         return { ok: false, error: "E-mail ou senha incorretos." };
       }
       return { ok: true };
@@ -78,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -93,6 +96,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return { ok: false, error: "Este e-mail já está cadastrado." };
           }
           return { ok: false, error: error.message };
+        }
+
+        if (!data.session) {
+          return { 
+            ok: false, 
+            error: "Conta criada! Por favor, acesse seu e-mail e clique no link de confirmação para poder entrar (Se não quiser isso, desative o 'Confirm Email' no Supabase)." 
+          };
         }
 
         return { ok: true };
