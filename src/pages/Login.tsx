@@ -83,11 +83,12 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login, register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -96,20 +97,25 @@ const Login = () => {
       return;
     }
 
+    setIsSubmitting(true);
+
     if (mode === "login") {
-      if (login(email, password)) {
+      const result = await login(email, password);
+      if (result.ok) {
         navigate("/");
       } else {
-        setError("E-mail ou senha incorretos.");
+        setError(result.error ?? "E-mail ou senha incorretos.");
       }
     } else {
-      const result = register(name, email, password);
+      const result = await register(name, email, password);
       if (result.ok) {
         navigate("/");
       } else {
         setError(result.error ?? "Erro ao criar conta.");
       }
     }
+    
+    setIsSubmitting(false);
   };
 
   const toggleMode = () => {
@@ -212,10 +218,11 @@ const Login = () => {
 
             <Button
               type="submit"
-              className="w-full sleep-gradient hover:opacity-90 text-primary-foreground font-semibold h-11 shadow-md shadow-primary/20"
+              disabled={isSubmitting}
+              className="w-full sleep-gradient hover:opacity-90 text-primary-foreground font-semibold h-11 shadow-md shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {mode === "login" ? "Entrar" : "Criar conta"}
-              <ChevronRight className="w-4 h-4 ml-1" />
+              {isSubmitting ? "Carregando..." : mode === "login" ? "Entrar" : "Criar conta"}
+              {!isSubmitting && <ChevronRight className="w-4 h-4 ml-1" />}
             </Button>
           </form>
 

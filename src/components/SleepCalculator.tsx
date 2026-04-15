@@ -245,9 +245,31 @@ const SleepCalculator = () => {
     : [];
 
   const handleSetReminder = (time: string, dayLabel: string) => {
-    toast.success(`⏰ Lembrete: ${dayLabel} às ${time}`, {
-      description: "Você será notificado (simulado).",
-    });
+    // Calcular a data exata baseada na string de time e dayLabel
+    const target = new Date();
+    if (dayLabel === "Amanhã") {
+      target.setDate(target.getDate() + 1);
+    } else if (dayLabel === "Depois de amanhã") {
+      target.setDate(target.getDate() + 2);
+    }
+    
+    const [h, m] = time.split(":").map(Number);
+    target.setHours(h, m, 0, 0);
+
+    // Duração do lembrete: 10 minutos
+    const endTarget = new Date(target.getTime() + 10 * 60000);
+
+    // Formatar para ICS UTC: YYYYMMDDTHHMMSSZ
+    const fmt = (d: Date) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+    const dates = `${fmt(target)}/${fmt(endTarget)}`;
+    const text = encodeURIComponent("⏰ Lembrete do SleepCycle");
+    const details = encodeURIComponent("Hora de ir dormir/acordar de acordo com o cálculo do seu ciclo de sono!");
+    
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${dates}&details=${details}`;
+    
+    toast.success("Abrindo Google Calendar...");
+    window.open(url, "_blank");
   };
 
   // Horário atual formatado (auto-atualiza ao remontar)
