@@ -1,0 +1,16 @@
+{
+  "name": "SleepCycle",
+  "short_name": "SleepCycle",
+  "description": "Calculadora de ciclos de sono - durma melhor, acorde renovado",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1629",
+  "theme_color": "#5b4cdb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
